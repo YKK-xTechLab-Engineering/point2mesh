@@ -110,10 +110,10 @@ def run_reconstruction(config: ReconstructionConfig) -> None:
 
     # Import and run directly instead of subprocess for better integration
     import torch
-    from ..models.layers.mesh import Mesh, PartMesh
-    from ..models.networks import init_net, sample_surface, local_nonuniform_penalty
-    from .. import utils
-    from ..models.losses import chamfer_distance, BeamGapLoss
+    from point2mesh.models.layers.mesh import Mesh, PartMesh
+    from point2mesh.models.networks import init_net, sample_surface, local_nonuniform_penalty
+    from point2mesh import utils
+    from point2mesh.models.losses import chamfer_distance, BeamGapLoss
     import numpy as np
     import time
     import os

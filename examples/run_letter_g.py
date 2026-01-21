@@ -6,10 +6,10 @@ This example uses beamgap loss and different network parameters
 for reconstructing thin structures.
 
 Usage:
-    python -m point2mesh.examples.run_letter_g
+    python examples/run_letter_g.py
 """
 
-from .run_reconstruction import EXAMPLES, run_reconstruction
+from run_reconstruction import EXAMPLES, run_reconstruction
 
 
 def main():

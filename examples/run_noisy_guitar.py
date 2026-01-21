@@ -5,10 +5,10 @@ Run Point2Mesh reconstruction on the noisy guitar example.
 This example demonstrates Point2Mesh's robustness to noise in the input.
 
 Usage:
-    python -m point2mesh.examples.run_noisy_guitar
+    python examples/run_noisy_guitar.py
 """
 
-from .run_reconstruction import EXAMPLES, run_reconstruction
+from run_reconstruction import EXAMPLES, run_reconstruction
 
 
 def main():

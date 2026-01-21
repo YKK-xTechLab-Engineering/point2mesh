@@ -3,10 +3,10 @@
 Run Point2Mesh reconstruction on the tiki example.
 
 Usage:
-    python -m point2mesh.examples.run_tiki
+    python examples/run_tiki.py
 """
 
-from .run_reconstruction import EXAMPLES, run_reconstruction
+from run_reconstruction import EXAMPLES, run_reconstruction
 
 
 def main():

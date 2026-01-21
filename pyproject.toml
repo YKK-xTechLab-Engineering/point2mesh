@@ -39,10 +39,6 @@ processing = [
 
 [project.scripts]
 point2mesh = "point2mesh.main:main"
-point2mesh-download-data = "point2mesh.examples.download_data:main"
-point2mesh-sample-mesh = "point2mesh.examples.sample_mesh:main"
-point2mesh-convex-hull = "point2mesh.examples.create_convex_hull:main"
-point2mesh-run = "point2mesh.examples.run_reconstruction:main"
 
 [project.urls]
 Homepage = "https://github.com/ranahanocka/point2mesh"

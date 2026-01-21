@@ -3,10 +3,10 @@
 Run Point2Mesh reconstruction on the giraffe example.
 
 Usage:
-    python -m point2mesh.examples.run_giraffe
+    python examples/run_giraffe.py
 """
 
-from .run_reconstruction import EXAMPLES, run_reconstruction
+from run_reconstruction import EXAMPLES, run_reconstruction
 
 
 def main():

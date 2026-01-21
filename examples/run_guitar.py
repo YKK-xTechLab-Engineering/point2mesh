@@ -3,12 +3,10 @@
 Run Point2Mesh reconstruction on the guitar example.
 
 Usage:
-    python -m point2mesh.examples.run_guitar
-    # or
-    pixi run python -m point2mesh.examples.run_guitar
+    python examples/run_guitar.py
 """
 
-from .run_reconstruction import EXAMPLES, run_reconstruction
+from run_reconstruction import EXAMPLES, run_reconstruction
 
 
 def main():

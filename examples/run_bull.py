@@ -3,10 +3,10 @@
 Run Point2Mesh reconstruction on the bull example.
 
 Usage:
-    python -m point2mesh.examples.run_bull
+    python examples/run_bull.py
 """
 
-from .run_reconstruction import EXAMPLES, run_reconstruction
+from run_reconstruction import EXAMPLES, run_reconstruction
 
 
 def main():

@@ -17,7 +17,7 @@ try:
 except ImportError:
     HAS_TRIMESH = False
 
-from ..utils import read_pts, export, get_manifold_executable, get_simplify_executable
+from point2mesh.utils import read_pts, export, get_manifold_executable, get_simplify_executable
 
 
 def count_faces(path: Path) -> int:

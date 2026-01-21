@@ -3,10 +3,10 @@
 Run Point2Mesh reconstruction on the triceratops example.
 
 Usage:
-    python -m point2mesh.examples.run_triceratops
+    python examples/run_triceratops.py
 """
 
-from .run_reconstruction import EXAMPLES, run_reconstruction
+from run_reconstruction import EXAMPLES, run_reconstruction
 
 
 def main():
