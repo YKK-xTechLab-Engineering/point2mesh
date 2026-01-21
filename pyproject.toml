@@ -1,0 +1,61 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "point2mesh"
+version = "0.1.0"
+description = "Point2Mesh: A Self-Prior for Deformable Meshes (SIGGRAPH 2020)"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.8"
+authors = [
+    { name = "Rana Hanocka", email = "rana@cs.tau.ac.il" },
+]
+keywords = ["deep-learning", "3d", "mesh", "point-cloud", "reconstruction"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "numpy>=1.18",
+    "fvcore>=0.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=5.0",
+]
+processing = [
+    "trimesh",
+]
+
+[project.scripts]
+point2mesh = "point2mesh.main:main"
+point2mesh-download-data = "point2mesh.examples.download_data:main"
+point2mesh-sample-mesh = "point2mesh.examples.sample_mesh:main"
+point2mesh-convex-hull = "point2mesh.examples.create_convex_hull:main"
+point2mesh-run = "point2mesh.examples.run_reconstruction:main"
+
+[project.urls]
+Homepage = "https://github.com/ranahanocka/point2mesh"
+Documentation = "https://github.com/ranahanocka/point2mesh"
+Repository = "https://github.com/ranahanocka/point2mesh"
+
+[tool.hatch.build.targets.wheel]
+packages = ["point2mesh"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "point2mesh/**/*.py",
+    "README.md",
+    "LICENSE",
+]

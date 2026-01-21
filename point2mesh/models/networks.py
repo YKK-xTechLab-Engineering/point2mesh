@@ -2,10 +2,10 @@ import torch
 import torch.nn as nn
 from torch.nn import init
 from torch import optim
-from models.layers.mesh_conv import MeshConv
+from .layers.mesh_conv import MeshConv
 import torch.nn.functional as F
-from models.layers.mesh_pool import MeshPool
-from models.layers.mesh_unpool import MeshUnpool
+from .layers.mesh_pool import MeshPool
+from .layers.mesh_unpool import MeshUnpool
 from typing import List
 
 
