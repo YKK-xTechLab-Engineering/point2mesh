@@ -2,10 +2,79 @@ import torch
 import numpy as np
 import os
 import uuid
-from .options import MANIFOLD_DIR
 import glob
+import shutil
+from pathlib import Path
+
+
+def get_manifold_bin_dir():
+    """
+    Get the directory containing the manifold executables.
+
+    Checks in this order:
+    1. MANIFOLD_DIR environment variable (for custom installations)
+    2. CONDA_PREFIX/bin (when installed via pixi/conda)
+    3. Package bin directory (for pip-installed wheels)
+    """
+    # Check for environment variable override
+    env_dir = os.environ.get('MANIFOLD_DIR')
+    if env_dir and os.path.isdir(env_dir):
+        return env_dir
+
+    # Check CONDA_PREFIX (pixi/conda environment)
+    conda_prefix = os.environ.get('CONDA_PREFIX')
+    if conda_prefix:
+        bin_dir = os.path.join(conda_prefix, 'bin')
+        if os.path.isfile(os.path.join(bin_dir, 'manifold')):
+            return bin_dir
+
+    # Check bundled executables (for pip wheels)
+    package_dir = Path(__file__).parent
+    bin_dir = package_dir / 'bin'
+    if bin_dir.is_dir() and (bin_dir / 'manifold').is_file():
+        return str(bin_dir)
+
+    raise FileNotFoundError(
+        "Manifold executables not found. Either:\n"
+        "1. Install via pixi (manifold package will be built automatically)\n"
+        "2. Set the MANIFOLD_DIR environment variable to your Manifold build directory\n"
+        "3. Ensure CONDA_PREFIX is set and contains bin/manifold"
+    )
+
+
+def get_manifold_executable():
+    """Get the path to the manifold executable."""
+    bin_dir = get_manifold_bin_dir()
+    manifold_path = os.path.join(bin_dir, 'manifold')
+    if not os.path.exists(manifold_path):
+        raise FileNotFoundError(f'manifold executable not found at {manifold_path}')
+    return manifold_path
+
+
+def get_simplify_executable():
+    """Get the path to the simplify executable."""
+    bin_dir = get_manifold_bin_dir()
+    simplify_path = os.path.join(bin_dir, 'simplify')
+    if not os.path.exists(simplify_path):
+        raise FileNotFoundError(f'simplify executable not found at {simplify_path}')
+    return simplify_path
+
 
 def manifold_upsample(mesh, save_path, Mesh, num_faces=2000, res=3000, simplify=True):
+    """
+    Upsample a mesh using the Manifold algorithm.
+
+    Args:
+        mesh: Input mesh object with export method
+        save_path: Directory to save intermediate files
+        Mesh: Mesh class to create output mesh
+        num_faces: Target number of faces after simplification
+        res: Resolution for manifold algorithm (default: 3000)
+        simplify: Whether to simplify the mesh after manifold processing
+
+    Returns:
+        Upsampled mesh object
+    """
     # export before upsample
     fname = os.path.join(save_path, 'recon_{}.obj'.format(len(mesh.faces)))
     mesh.export(fname)
@@ -13,15 +82,13 @@ def manifold_upsample(mesh, save_path, Mesh, num_faces=2000, res=3000, simplify=
     temp_file = os.path.join(save_path, random_file_name('obj'))
     opts = ' ' + str(res) if res is not None else ''
 
-    manifold_script_path = os.path.join(MANIFOLD_DIR, 'manifold')
-    if not os.path.exists(manifold_script_path):
-        raise FileNotFoundError(f'{manifold_script_path} not found')
-    cmd = "{} {} {}".format(manifold_script_path, fname, temp_file + opts)
+    manifold_path = get_manifold_executable()
+    cmd = "{} {} {}".format(manifold_path, fname, temp_file + opts)
     os.system(cmd)
 
     if simplify:
-        cmd = "{} -i {} -o {} -f {}".format(os.path.join(MANIFOLD_DIR, 'simplify'), temp_file,
-                                                             temp_file, num_faces)
+        simplify_path = get_simplify_executable()
+        cmd = "{} -i {} -o {} -f {}".format(simplify_path, temp_file, temp_file, num_faces)
         os.system(cmd)
 
     m_out = Mesh(temp_file, hold_history=True, device=mesh.device)

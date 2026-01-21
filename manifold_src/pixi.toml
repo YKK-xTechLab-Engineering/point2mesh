@@ -1,0 +1,25 @@
+[workspace]
+name = "manifold"
+channels = ["https://prefix.dev/pixi-build-backends", "conda-forge"]
+platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
+preview = ["pixi-build"]
+
+[package]
+name = "manifold"
+version = "1.0.0"
+description = "Robust Watertight Mesh Generation"
+license = "MIT"
+
+[package.build]
+backend = { name = "pixi-build-cmake", version = "*" }
+
+[package.build-dependencies]
+cmake = ">=3.15"
+ninja = "*"
+cxx-compiler = "*"
+
+[package.host-dependencies]
+# No host dependencies needed
+
+[package.run-dependencies]
+# No runtime dependencies - standalone executables

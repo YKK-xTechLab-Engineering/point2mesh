@@ -12,8 +12,16 @@ Reference:
 __version__ = "0.1.0"
 
 # Eager imports (no pytorch3d dependency)
-from .options import Options, MANIFOLD_DIR
-from .utils import read_pts, load_obj, export, manifold_upsample
+from .options import Options
+from .utils import (
+    read_pts,
+    load_obj,
+    export,
+    manifold_upsample,
+    get_manifold_bin_dir,
+    get_manifold_executable,
+    get_simplify_executable,
+)
 
 # Lazy imports for pytorch3d-dependent modules
 _lazy_imports = {
@@ -40,7 +48,9 @@ def __getattr__(name):
 
 __all__ = [
     "Options",
-    "MANIFOLD_DIR",
+    "get_manifold_bin_dir",
+    "get_manifold_executable",
+    "get_simplify_executable",
     "read_pts",
     "load_obj",
     "export",

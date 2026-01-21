@@ -7,7 +7,6 @@ which can be used as the starting mesh for Point2Mesh reconstruction.
 
 import argparse
 import os
-import subprocess
 import warnings
 from pathlib import Path
 from typing import Optional
@@ -18,7 +17,7 @@ try:
 except ImportError:
     HAS_TRIMESH = False
 
-from ..utils import read_pts, export
+from ..utils import read_pts, export, get_manifold_executable, get_simplify_executable
 
 
 def count_faces(path: Path) -> int:
@@ -28,15 +27,17 @@ def count_faces(path: Path) -> int:
     return sum(1 for line in lines if line.startswith("f"))
 
 
-def run_manifold(path: Path, res: int, manifold_path: Path) -> None:
+def run_manifold(path: Path, res: int) -> None:
     """Run manifold software to make mesh watertight."""
-    cmd = f"{manifold_path}/manifold {path} {path} {res}"
+    manifold_exe = get_manifold_executable()
+    cmd = f"{manifold_exe} {path} {path} {res}"
     os.system(cmd)
 
 
-def run_simplify(path: Path, faces: int, manifold_path: Path) -> None:
+def run_simplify(path: Path, faces: int) -> None:
     """Run simplify software to reduce face count."""
-    cmd = f"{manifold_path}/simplify -i {path} -o {path} -f {faces}"
+    simplify_exe = get_simplify_executable()
+    cmd = f"{simplify_exe} -i {path} -o {path} -f {faces}"
     os.system(cmd)
 
 
@@ -56,7 +57,6 @@ def create_convex_hull(
     input_file: str,
     output_file: Optional[str] = None,
     target_faces: int = 500,
-    manifold_path: Optional[str] = None,
     manifold_res: int = 5000,
     use_blender: bool = False,
     blender_path: Optional[str] = None,
@@ -69,7 +69,6 @@ def create_convex_hull(
         input_file: Path to input point cloud (.ply, .xyz, or .npts file).
         output_file: Path to output OBJ file. If None, uses input name with '_hull.obj'.
         target_faces: Target number of faces for the output mesh.
-        manifold_path: Path to Manifold software build directory.
         manifold_res: Resolution for Manifold software.
         use_blender: Use Blender instead of Manifold for hull generation.
         blender_path: Path to Blender installation directory.
@@ -100,12 +99,6 @@ def create_convex_hull(
     else:
         output_path = Path(output_file)
 
-    # Set default paths
-    if manifold_path is None:
-        manifold_path = Path.home() / "code" / "Manifold" / "build"
-    else:
-        manifold_path = Path(manifold_path)
-
     if blender_path is not None:
         blender_path = Path(blender_path)
 
@@ -116,15 +109,9 @@ def create_convex_hull(
                 "Blender not found. Provide --blender-path or use Manifold."
             )
     else:
-        if not (manifold_path / "manifold").exists():
-            raise FileNotFoundError(
-                f"Manifold software not found at {manifold_path}. "
-                "Install from https://github.com/hjwdzh/Manifold"
-            )
-        if not (manifold_path / "simplify").exists():
-            raise FileNotFoundError(
-                f"Simplify software not found at {manifold_path}"
-            )
+        # This will raise FileNotFoundError with helpful message if not found
+        get_manifold_executable()
+        get_simplify_executable()
 
     # Read point cloud
     print(f"Reading point cloud from {input_path}...")
@@ -144,7 +131,7 @@ def create_convex_hull(
         run_blender_hull(output_path, output_path, blender_res, blender_path)
     else:
         print(f"Processing with Manifold (resolution: {manifold_res})...")
-        run_manifold(output_path, manifold_res, manifold_path)
+        run_manifold(output_path, manifold_res)
 
     # Check face count and simplify if needed
     num_faces = count_faces(output_path)
@@ -160,7 +147,7 @@ def create_convex_hull(
         )
     else:
         print(f"Simplifying to {target_faces} faces...")
-        run_simplify(output_path, target_faces, manifold_path)
+        run_simplify(output_path, target_faces)
 
     print(f"Done! Convex hull saved to {output_path}")
     return output_path
@@ -193,12 +180,6 @@ def main():
         help="Target number of faces for the convex hull",
     )
     parser.add_argument(
-        "--manifold-path",
-        type=str,
-        default=None,
-        help="Path to Manifold software build directory",
-    )
-    parser.add_argument(
         "--manifold-res",
         type=int,
         default=5000,
@@ -228,7 +209,6 @@ def main():
         input_file=args.input,
         output_file=args.output,
         target_faces=args.faces,
-        manifold_path=args.manifold_path,
         manifold_res=args.manifold_res,
         use_blender=args.blender,
         blender_path=args.blender_path,

@@ -7,7 +7,7 @@ name = "point2mesh"
 version = "0.1.0"
 description = "Point2Mesh: A Self-Prior for Deformable Meshes (SIGGRAPH 2020)"
 readme = "README.md"
-license = "MIT"
+license = { text = "MIT" }
 requires-python = ">=3.8"
 authors = [
     { name = "Rana Hanocka", email = "rana@cs.tau.ac.il" },
@@ -16,7 +16,6 @@ keywords = ["deep-learning", "3d", "mesh", "point-cloud", "reconstruction"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
@@ -59,3 +58,9 @@ include = [
     "README.md",
     "LICENSE",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+addopts = "-v"
